@@ -30,10 +30,21 @@ Cette application a été conçue en respectant les meilleures pratiques de dév
 
 ## 📸 Aperçu de l'interface
 
-* Onglet Principal (Dashboard)
+* **Tableau de bord & Console d'Audit**
 <img width="1120" height="653" alt="image" src="https://github.com/user-attachments/assets/af1cf65f-d11c-442e-b83b-52e0fba31be1" />
-<img width="841" height="624" alt="image" src="https://github.com/user-attachments/assets/e461c08b-3106-4955-ac41-bef37e3a798f" />
-<img width="814" height="609" alt="image" src="https://github.com/user-attachments/assets/d9568a89-9387-4751-8fb2-1e03643d2c89" />
+
+---
+
+## 📊 Résultats de Benchmark (Avant / Après)
+
+Test de performance réel effectué sur le jeu **Unturned** avec un processeur **AMD Ryzen 7 5700U** (Radeon Graphics intégrée) :
+
+* **FPS Moyens (Average FPS)** : De **50.1 FPS** ➔ **61.7 FPS** (**+23%** de performances brutes)
+* **1% Percentile FPS (Stabilité)** : De **29.6 FPS** ➔ **43.7 FPS** (**+47%** de fluidité globale)
+* **0.2% Percentile FPS (Saccades)** : De **16.8 FPS** ➔ **35.9 FPS** (**+113%** de réduction des drops de FPS)
+
+> *Grâce aux optimisations de registre, d'alimentation et de gestion des services de DiFPSBoost, les micro-saccades (stuttering) ont été éradiquées, offrant un gameplay parfaitement fluide.*
+<img width="1058" height="360" alt="image" src="https://github.com/user-attachments/assets/b5b695a0-b172-4305-b4ca-481eec288520" />
 
 
 ---

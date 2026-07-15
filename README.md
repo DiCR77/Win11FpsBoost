@@ -1,6 +1,6 @@
 # ⚡ DiFPSBoost (Windows 11)
 
-Activez le plein potentiel de votre machine ! **FPSBoostPro** est une application moderne développée en **C# / WPF** (architecture MVVM) permettant d'optimiser Windows 11 pour le gaming, de réduire la latence (ping) et de nettoyer le système en toute sécurité.
+Activez le plein potentiel de votre machine ! **DiFPSBoost** est une application moderne développée en **C# / WPF** (architecture MVVM) permettant d'optimiser Windows 11 pour le gaming, de réduire la latence (ping) et de nettoyer le système en toute sécurité.
 
 ---
 

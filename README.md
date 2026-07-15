@@ -6,12 +6,12 @@ Activez le plein potentiel de votre machine. **FPS Boost Pro** est une applicati
 
 ## 🚀 Fonctionnalités principales
 
-* **🏠 Dashboard interactif** : Visualisez l'état global de votre système en un coup d'œil.
-* **⚡ One Click Boost** : Crée automatiquement un point de restauration système avant d'appliquer les optimisations majeures.
-* **🌐 Network Tweaks** : Optimisation des paramètres de la carte réseau (latence, DNS, paquets) via scripts PowerShell sécurisés.
+* **🏠 Tableau de bord interactif** : Visualisez l'état global de votre système en un coup d'œil.
+* **⚡ Boost en un clic** : Crée automatiquement un point de restauration système avant d'appliquer les optimisations majeures.
+* **🌐 Réseau** : Optimisation des paramètres de la carte réseau (latence, DNS, paquets) via scripts PowerShell sécurisés.
 * **⚙ Services Manager** : Désactivation intelligente des services superflus et de la télémétrie Windows.
-* **🔋 Power Management** : Activation de profils d'alimentation hautes performances cachés de Windows.
-* **🎮 Gaming Tweaks** : Optimisations avancées du Registre (optimisation FSE, désactivation Game DVR, etc.).
+* **🔋 Alimentation** : Activation de profils d'alimentation hautes performances cachés de Windows.
+* **🎮 Optimisations Gaming** : Optimisations avancées du Registre (optimisation FSE, désactivation Game DVR, etc.).
 
 ---
 
@@ -32,7 +32,9 @@ Cette application a été conçue en respectant les meilleures pratiques de dév
 
 | Onglet Principal | Tweaks Système |
 | :---: | :---: |
-| ![Dashboard](https://via.placeholder.com/400x250?text=Apercu+Dashboard) | ![Tweaks](https://via.placeholder.com/400x250?text=Apercu+Tweaks) |
+| ![Dashboard]<img width="1120" height="653" alt="image" src="https://github.com/user-attachments/assets/af1cf65f-d11c-442e-b83b-52e0fba31be1" />
+ | ![Gaming]<img width="692" height="349" alt="image" src="https://github.com/user-attachments/assets/2d184cb6-b16f-4050-a504-8a8be403e6d9" />
+ |
 
 ---
 

@@ -53,15 +53,15 @@
                                Foreground="White"
                                Margin="0,20,0,40"/>
 
-                    <Button Content="🏠 Dashboard"
+                    <Button Content="🏠 Tableau de bord"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Dashboard"/>
 
-                    <Button Content="🚀 One Click Boost"
+                    <Button Content="🚀 Boost en un clic"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="OneClick"
                             Margin="0,5"/>
-                    <Button Content="🌐 Network"
+                    <Button Content="🌐 Réseau"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Network"
                             Margin="0,5"/>
@@ -69,11 +69,11 @@
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Services"
                             Margin="0,5"/>
-                    <Button Content="🔋 Power"
+                    <Button Content="🔋 Alimentation"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Power"
                             Margin="0,5"/>
-                    <Button Content="🎮 Gaming Tweaks"
+                    <Button Content="🎮 Optimisations Gaming"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Gaming"
                             Margin="0,5"/>

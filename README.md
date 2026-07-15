@@ -1,6 +1,6 @@
-# ⚡ Di FPS Boost
+# ⚡ FPS BOOST WIN 11
 
-Activez le plein potentiel de votre machine. **DiFpsBoost** est une application moderne développée en **C# / WPF** (architecture MVVM) permettant d'optimiser Windows 11 pour le gaming et les tâches intensives.
+Activez le plein potentiel de votre machine **DiFpsBoost** est une application moderne développée en **C# / WPF** (architecture MVVM) permettant d'optimiser Windows 11 pour le gaming et les tâches intensives.
 
 ---
 

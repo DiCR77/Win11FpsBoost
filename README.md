@@ -27,14 +27,6 @@ Cette application a été conçue en respectant les meilleures pratiques de dév
 * **Sécurité** : Privilèges Administrateur requis (gérés de manière transparente via le fichier `app.manifest`) pour modifier le Registre et exécuter les commandes système.
 
 ---
-
-## 📸 Aperçu de l'interface
-
-* **Tableau de bord & Console d'Audit**
-<img width="1120" height="653" alt="image" src="https://github.com/user-attachments/assets/af1cf65f-d11c-442e-b83b-52e0fba31be1" />
-
----
-
 ## 📊 Résultats de Benchmark (Avant / Après)
 
 Test de performance réel effectué sur le jeu **Unturned** avec un processeur **AMD Ryzen 7 5700U** (Radeon Graphics intégrée) :
@@ -46,6 +38,11 @@ Test de performance réel effectué sur le jeu **Unturned** avec un processeur *
 > *Grâce aux optimisations de registre, d'alimentation et de gestion des services de DiFPSBoost, les micro-saccades (stuttering) ont été éradiquées, offrant un gameplay parfaitement fluide.*
 <img width="1058" height="360" alt="image" src="https://github.com/user-attachments/assets/b5b695a0-b172-4305-b4ca-481eec288520" />
 
+---
+## 📸 Aperçu de l'interface
+
+* **Tableau de bord & Console d'Audit**
+<img width="1120" height="653" alt="image" src="https://github.com/user-attachments/assets/af1cf65f-d11c-442e-b83b-52e0fba31be1" />
 
 ---
 

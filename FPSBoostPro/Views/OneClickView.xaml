@@ -11,7 +11,7 @@
 
         <StackPanel Grid.Row="0" Margin="10,0,0,30">
             <TextBlock Text="N E T T O Y A G E   R A P I D E" FontFamily="Segoe UI Semibold" FontSize="11" FontWeight="Bold" Foreground="#8B5CF6"/>
-            <TextBlock Text="One Click Optimization" FontFamily="Segoe UI Light" FontSize="36" Foreground="White" Margin="0,5,0,0"/>
+            <TextBlock Text="Boost en un clic" FontFamily="Segoe UI Light" FontSize="36" Foreground="White" Margin="0,5,0,0"/>
             <TextBlock Text="Suppression sécurisée des caches et fichiers temporaires système." FontFamily="Segoe UI" Foreground="#9CA3AF" FontSize="13" Margin="0,5,0,0"/>
         </StackPanel>
 

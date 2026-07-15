@@ -11,7 +11,7 @@
 
         <StackPanel Grid.Row="0" Margin="10,0,0,30">
             <TextBlock Text="O P T I M I S A T I O N   P I N G" FontFamily="Segoe UI Semibold" FontSize="11" FontWeight="Bold" Foreground="#10B981"/>
-            <TextBlock Text="Network Latency Optimizer" FontFamily="Segoe UI Light" FontSize="36" Foreground="White" Margin="0,5,0,0"/>
+            <TextBlock Text="Optimisations Réseau" FontFamily="Segoe UI Light" FontSize="36" Foreground="White" Margin="0,5,0,0"/>
             <TextBlock Text="Ajustements du réseau Windows pour réduire la latence en jeu." FontFamily="Segoe UI" Foreground="#9CA3AF" FontSize="13" Margin="0,5,0,0"/>
         </StackPanel>
 

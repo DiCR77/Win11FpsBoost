@@ -6,7 +6,7 @@
     <Grid>
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="700">
 
-            <TextBlock Text="🎮 Advanced Gaming Tweaks" 
+            <TextBlock Text="🎮 Optimisations Gaming" 
                        FontSize="32" 
                        FontWeight="Bold" 
                        Foreground="White" 

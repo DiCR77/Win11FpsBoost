@@ -16,7 +16,7 @@
                        FontWeight="Bold" 
                        Foreground="#3B82F6"/>
 
-            <TextBlock Text="Power Plan Optimizer" 
+            <TextBlock Text="Gestion de l'Alimentation" 
                        FontFamily="Segoe UI Light" 
                        FontSize="36" 
                        Foreground="White" 

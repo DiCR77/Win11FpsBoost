@@ -28,5 +28,10 @@ namespace FPSBoostPro.Views
             catch { }
             e.Handled = true;
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

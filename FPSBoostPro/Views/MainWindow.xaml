@@ -1,0 +1,113 @@
+﻿<Window x:Class="FPSBoostPro.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:viewmodels="clr-namespace:FPSBoostPro.ViewModels"
+        xmlns:views="clr-namespace:FPSBoostPro.Views"
+        Title="FPS Boost Pro"
+        Height="700"
+        Width="1150"
+        WindowStartupLocation="CenterScreen"
+        Background="#111827">
+
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewmodels:ServicesViewModel}">
+            <views:ServicesView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:NetworkViewModel}">
+            <views:NetworkView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type views:DashboardView}">
+            <views:DashboardView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:OneClickViewModel}">
+            <views:OneClickView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:PowerViewModel}">
+            <views:PowerView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:GamingViewModel}">
+            <views:GamingView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:DashboardViewModel}">
+            <views:DashboardView/>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid Background="#111827">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Background="#1F2937">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Margin="20">
+                    <TextBlock Text="⚡ FPS Boost Pro"
+                               FontSize="26"
+                               FontWeight="Bold"
+                               Foreground="White"
+                               Margin="0,20,0,40"/>
+
+                    <Button Content="🏠 Dashboard"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Dashboard"/>
+
+                    <Button Content="🚀 One Click Boost"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="OneClick"
+                            Margin="0,5"/>
+                    <Button Content="🌐 Network"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Network"
+                            Margin="0,5"/>
+                    <Button Content="⚙ Services"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Services"
+                            Margin="0,5"/>
+                    <Button Content="🔋 Power"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Power"
+                            Margin="0,5"/>
+                    <Button Content="🎮 Gaming Tweaks"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Gaming"
+                            Margin="0,5"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Margin="10,0,10,20">
+                    <TextBlock Text="Développé par :" 
+                               FontFamily="Segoe UI" 
+                               FontSize="11" 
+                               Foreground="#6B7280" 
+                               HorizontalAlignment="Center"/>
+
+                    <TextBlock Text="Diae" 
+                               FontFamily="Segoe UI Semibold" 
+                               FontSize="13" 
+                               Foreground="#3B82F6" 
+                               HorizontalAlignment="Center" 
+                               Margin="0,2,0,5"/>
+
+                    <TextBlock HorizontalAlignment="Center">
+                        <Hyperlink NavigateUri="https://github.com/DiCR77" 
+                                   Foreground="#9CA3AF" 
+                                   FontSize="11"
+                                   RequestNavigate="Hyperlink_RequestNavigate">
+                            github.com/DiCR77
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Column="1" Background="#111827" Margin="30">
+            <ContentControl Content="{Binding CurrentView}"/>
+        </Grid>
+
+    </Grid>
+</Window>

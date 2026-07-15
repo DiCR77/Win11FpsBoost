@@ -1,0 +1,120 @@
+﻿<UserControl x:Class="FPSBoostPro.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="Transparent">
+
+    <Grid Margin="30,20,30,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="10,0,0,30">
+            <TextBlock Text="T A B L E A U   D E   B O R D" 
+                       FontFamily="Segoe UI Semibold" 
+                       FontSize="11" 
+                       FontWeight="Bold" 
+                       Foreground="#3B82F6"/>
+
+            <TextBlock Text="Moniteur Système" 
+                       FontFamily="Segoe UI Light" 
+                       FontSize="36" 
+                       Foreground="White" 
+                       Margin="0,5,0,0"/>
+
+            <TextBlock Text="Statistiques et état de santé de votre PC en temps réel." 
+                       FontFamily="Segoe UI" 
+                       Foreground="#9CA3AF" 
+                       FontSize="13" 
+                       Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <UniformGrid Grid.Row="1" Columns="2" Rows="1">
+
+            <Border Background="#1F2937" CornerRadius="16" Margin="10" Padding="25" BorderBrush="#374151" BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                        <TextBlock Text="💻" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="Processeur (CPU)" 
+                                   FontFamily="Segoe UI Semibold" 
+                                   Foreground="#D1D5DB" 
+                                   FontSize="16" 
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Row="1" 
+                               Text="{Binding CpuUsage}" 
+                               FontFamily="Segoe UI Semibold" 
+                               Foreground="#10B981" 
+                               FontSize="72" 
+                               FontWeight="Bold" 
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center"/>
+
+                    <StackPanel Grid.Row="2" Margin="0,10,0,0">
+                        <TextBlock Text="Charge globale du processeur" 
+                                   FontFamily="Segoe UI" 
+                                   Foreground="#6B7280" 
+                                   FontSize="11" 
+                                   Margin="0,0,0,8"/>
+                        <ProgressBar Height="6" 
+                                     Value="{Binding CpuUsageValue}" 
+                                     Maximum="100" 
+                                     Background="#111827" 
+                                     Foreground="#10B981" 
+                                     BorderThickness="0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Background="#1F2937" CornerRadius="16" Margin="10" Padding="25" BorderBrush="#374151" BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                        <TextBlock Text="⚡" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="Mémoire Vive (RAM)" 
+                                   FontFamily="Segoe UI Semibold" 
+                                   Foreground="#D1D5DB" 
+                                   FontSize="16" 
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Row="1" 
+                               Text="{Binding RamUsage}" 
+                               FontFamily="Segoe UI Semibold" 
+                               Foreground="#3B82F6" 
+                               FontSize="72" 
+                               FontWeight="Bold" 
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center"/>
+
+                    <StackPanel Grid.Row="2" Margin="0,10,0,0">
+                        <TextBlock Text="Utilisation de la mémoire physique" 
+                                   FontFamily="Segoe UI" 
+                                   Foreground="#6B7280" 
+                                   FontSize="11" 
+                                   Margin="0,0,0,8"/>
+                        <ProgressBar Height="6" 
+                                     Value="{Binding RamUsageValue}" 
+                                     Maximum="100" 
+                                     Background="#111827" 
+                                     Foreground="#3B82F6" 
+                                     BorderThickness="0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+        </UniformGrid>
+    </Grid>
+</UserControl>

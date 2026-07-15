@@ -28,13 +28,9 @@ Cette application a été conçue en respectant les meilleures pratiques de dév
 
 ## 📸 Aperçu de l'interface
 
-> 💡 *Astuce : Glissez-déposez vos captures d'écran du projet ici pour les afficher !*
-
 | Onglet Principal | Tweaks Système |
 | :---: | :---: |
-| ![Dashboard]<img width="1120" height="653" alt="image" src="https://github.com/user-attachments/assets/af1cf65f-d11c-442e-b83b-52e0fba31be1" />
- | ![Gaming]<img width="692" height="349" alt="image" src="https://github.com/user-attachments/assets/2d184cb6-b16f-4050-a504-8a8be403e6d9" />
- |
+| ![Dashboard]<img width="1120" height="653" alt="image" src="https://github.com/user-attachments/assets/af1cf65f-d11c-442e-b83b-52e0fba31be1" />| ![Gaming]<img width="692" height="349" alt="image" src="https://github.com/user-attachments/assets/2d184cb6-b16f-4050-a504-8a8be403e6d9" />|
 
 ---
 

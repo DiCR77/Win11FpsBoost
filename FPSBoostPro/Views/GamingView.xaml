@@ -3,81 +3,39 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="Transparent">
 
-    <Grid>
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="700">
+    <Grid Margin="30,20,30,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <TextBlock Text="🎮 Optimisations Gaming" 
-                       FontSize="32" 
-                       FontWeight="Bold" 
-                       Foreground="White" 
-                       HorizontalAlignment="Center" 
-                       Margin="0,0,0,10"/>
-
-            <TextBlock Text="Cochez uniquement les optimisations que vous souhaitez appliquer." 
-                       FontSize="16" 
-                       Foreground="#9CA3AF" 
-                       HorizontalAlignment="Center" 
-                       Margin="0,0,0,25"/>
-
-            <!-- Liste des choix avec explications -->
-            <Border Background="#1F2937" CornerRadius="10" Padding="20" Margin="0,0,0,25">
-                <StackPanel>
-
-                    <!-- Option 1 : Game Mode -->
-                    <CheckBox IsChecked="{Binding ApplyGameMode}" Margin="0,0,0,15">
-                        <StackPanel Margin="10,0,0,0">
-                            <TextBlock Text="Activer le Game Mode Windows" FontWeight="Bold" Foreground="White" FontSize="14"/>
-                            <TextBlock Text="Force Windows à prioriser le CPU/GPU pour le jeu actif." Foreground="#9CA3AF" FontSize="12" TextWrapping="Wrap"/>
-                        </StackPanel>
-                    </CheckBox>
-
-                    <!-- Option 2 : Game DVR -->
-                    <CheckBox IsChecked="{Binding ApplyDisableDVR}" Margin="0,0,0,15">
-                        <StackPanel Margin="10,0,0,0">
-                            <TextBlock Text="Désactiver le Game DVR" FontWeight="Bold" Foreground="White" FontSize="14"/>
-                            <TextBlock Text="Coupe l'enregistrement de clips en arrière-plan (gagne du CPU)." Foreground="#9CA3AF" FontSize="12" TextWrapping="Wrap"/>
-                        </StackPanel>
-                    </CheckBox>
-
-                    <!-- Option 3 : Souris -->
-                    <CheckBox IsChecked="{Binding ApplyMouseTweak}" Margin="0,0,0,15">
-                        <StackPanel Margin="10,0,0,0">
-                            <TextBlock Text="Désactiver l'accélération de la souris" FontWeight="Bold" Foreground="White" FontSize="14"/>
-                            <TextBlock Text="Désactive la 'Précision du pointeur' pour une visée brute et constante en jeu." Foreground="#9CA3AF" FontSize="12" TextWrapping="Wrap"/>
-                        </StackPanel>
-                    </CheckBox>
-
-                    <!-- Option 4 : TRIM SSD -->
-                    <CheckBox IsChecked="{Binding ApplyTrim}" Margin="0,0,0,15">
-                        <StackPanel Margin="10,0,0,0">
-                            <TextBlock Text="Optimiser le SSD (TRIM)" FontWeight="Bold" Foreground="White" FontSize="14"/>
-                            <TextBlock Text="Force la commande TRIM sur le disque C pour de meilleures performances d'écriture." Foreground="#9CA3AF" FontSize="12" TextWrapping="Wrap"/>
-                        </StackPanel>
-                    </CheckBox>
-
-                    <!-- Option 5 : Hibernation -->
-                    <CheckBox IsChecked="{Binding ApplyDisableHibernation}">
-                        <StackPanel Margin="10,0,0,0">
-                            <TextBlock Text="Désactiver la veille prolongée (Hibernation)" FontWeight="Bold" Foreground="White" FontSize="14"/>
-                            <TextBlock Text="Supprime le fichier 'hiberfil.sys' pour libérer instantanément plusieurs Go sur le disque." Foreground="#9CA3AF" FontSize="12" TextWrapping="Wrap"/>
-                        </StackPanel>
-                    </CheckBox>
-
-                </StackPanel>
-            </Border>
-
-            <Button Content="Appliquer la sélection" 
-                    Width="300" 
-                    Height="50"
-                    Command="{Binding OptimizeGamingCommand}"/>
-
-            <TextBlock Text="{Binding GamingStatus}" 
-                       FontSize="16" 
-                       FontWeight="SemiBold"
-                       Foreground="#EC4899" 
-                       HorizontalAlignment="Center" 
-                       Margin="0,20,0,0"/>
-
+        <StackPanel Grid.Row="0" Margin="10,0,0,20">
+            <TextBlock Text="G A M I N G" FontFamily="Segoe UI Semibold" FontSize="11" FontWeight="Bold" Foreground="#8B5CF6"/>
+            <TextBlock Text="Optimisations Jeux" FontFamily="Segoe UI Light" FontSize="36" Foreground="White"/>
         </StackPanel>
+
+        <StackPanel Grid.Row="1" Margin="10,0,10,15">
+            <CheckBox Content="Activer le Mode Jeu" IsChecked="{Binding ApplyGameMode}" Foreground="White" Margin="0,5"/>
+            <CheckBox Content="Désactiver Game DVR (Recommandé)" IsChecked="{Binding ApplyDisableDVR}" Foreground="White" Margin="0,5"/>
+            <CheckBox Content="Désactiver l'accélération souris" IsChecked="{Binding ApplyMouseTweak}" Foreground="White" Margin="0,5"/>
+            <CheckBox Content="TRIM SSD (Améliore la lecture)" IsChecked="{Binding ApplyTrim}" Foreground="White" Margin="0,5"/>
+            <CheckBox Content="Désactiver l'Hibernation" IsChecked="{Binding ApplyDisableHibernation}" Foreground="White" Margin="0,5"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Margin="10,0,10,20">
+            <TextBlock Text="ℹ️ Les options cochées modifieront le Registre Windows. Un redémarrage sera nécessaire." 
+                       Foreground="#9CA3AF" FontSize="13" TextWrapping="Wrap" Margin="0,0,0,15"/>
+
+            <Button Content="Appliquer les optimisations" Command="{Binding OptimizeGamingCommand}" Width="280" Height="48" BorderThickness="0" Cursor="Hand" Background="#8B5CF6" HorizontalAlignment="Left"/>
+            <TextBlock Text="{Binding GamingStatus}" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="#10B981" Margin="0,15,0,0"/>
+        </StackPanel>
+
+        <Border Grid.Row="3" Background="#111827" CornerRadius="12" BorderBrush="#374151" BorderThickness="1" Margin="10,0,10,10">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="15">
+                <TextBlock Text="{Binding AuditLog}" FontFamily="Consolas" FontSize="14" Foreground="#D1D5DB" TextWrapping="Wrap"/>
+            </ScrollViewer>
+        </Border>
     </Grid>
 </UserControl>

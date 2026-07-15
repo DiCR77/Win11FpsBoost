@@ -1,108 +1,136 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Runtime.Versioning; // AJOUTER CETTE LIGNE
+using System.Runtime.Versioning;
+using System.Threading.Tasks;
 using Microsoft.Win32;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace FPSBoostPro.ViewModels
 {
-    [SupportedOSPlatform("windows")] // AJOUTER CETTE LIGNE
+    [SupportedOSPlatform("windows")]
     public partial class GamingViewModel : ObservableObject
     {
-        [ObservableProperty] private string _gamingStatus = "Sélectionnez vos options puis cliquez sur optimiser.";
+        [ObservableProperty] private string _gamingStatus = "Prêt à optimiser.";
+        [ObservableProperty] private string _auditLog = "En attente...\n";
 
-        // États des cases à cocher (cochées par défaut pour le confort de l'utilisateur)
         [ObservableProperty] private bool _applyGameMode = true;
         [ObservableProperty] private bool _applyDisableDVR = true;
-        [ObservableProperty] private bool _applyMouseTweak = false; // Désactivé par défaut, choix utilisateur
+        [ObservableProperty] private bool _applyMouseTweak = false;
         [ObservableProperty] private bool _applyTrim = true;
         [ObservableProperty] private bool _applyDisableHibernation = false;
 
         [RelayCommand]
-        private void OptimizeGaming()
+        private async Task OptimizeGaming()
         {
             GamingStatus = "Optimisation en cours...";
-            int count = 0;
+            AuditLog = "=== DÉBUT DE L'AUDIT GAMING ===\n\n";
 
-            try
-            {
-                // 1. Game Mode
-                if (ApplyGameMode)
+            if (ApplyGameMode) await RunRegStep("⏳ Game Mode...", () => {
+                using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\GameBar", true))
+                    key?.SetValue("AllowAutoGameMode", 1, RegistryValueKind.DWord);
+            });
+
+            if (ApplyDisableDVR) await RunRegStep("⏳ Désactivation Game DVR...", () => {
+                using (RegistryKey? key1 = Registry.CurrentUser.OpenSubKey(@"System\GameConfigStore", true))
+                    key1?.SetValue("GameDVR_Enabled", 0, RegistryValueKind.DWord);
+                using (RegistryKey? key2 = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows\GameDVR", true))
+                    key2?.SetValue("AllowGameDVR", 0, RegistryValueKind.DWord);
+            });
+
+            if (ApplyMouseTweak) await RunRegStep("⏳ Optimisation Souris...", () => {
+                using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"Control Panel\Mouse", true))
                 {
-                    using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\GameBar", true))
-                    {
-                        key?.SetValue("AllowAutoGameMode", 1, RegistryValueKind.DWord);
-                    }
-                    count++;
+                    key?.SetValue("MouseSpeed", "0", RegistryValueKind.String);
+                    key?.SetValue("MouseThreshold1", "0", RegistryValueKind.String);
+                    key?.SetValue("MouseThreshold2", "0", RegistryValueKind.String);
                 }
+            });
 
-                // 2. Game DVR
-                if (ApplyDisableDVR)
-                {
-                    using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"System\GameConfigStore", true))
-                    {
-                        key?.SetValue("GameDVR_Enabled", 0, RegistryValueKind.DWord);
-                    }
-                    using (RegistryKey? key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows\GameDVR", true))
-                    {
-                        key?.SetValue("AllowGameDVR", 0, RegistryValueKind.DWord);
-                    }
-                    count++;
-                }
+            if (ApplyTrim) await RunCmdStep("⏳ TRIM SSD...", "powershell.exe", "-Command \"Optimize-Volume -DriveLetter C -Defrag\"");
+            if (ApplyDisableHibernation) await RunCmdStep("⏳ Désactivation Hibernation...", "powercfg", "-h off");
 
-                // 3. Mouse Tweak
-                if (ApplyMouseTweak)
-                {
-                    using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"Control Panel\Mouse", true))
-                    {
-                        key?.SetValue("MouseSpeed", "0", RegistryValueKind.String);
-                        key?.SetValue("MouseThreshold1", "0", RegistryValueKind.String);
-                        key?.SetValue("MouseThreshold2", "0", RegistryValueKind.String);
-                    }
-                    count++;
-                }
-
-                // 4. TRIM SSD
-                if (ApplyTrim)
-                {
-                    RunPowerShell("Optimize-Volume -DriveLetter C -Defrag -Verbose");
-                    count++;
-                }
-
-                // 5. Disable Hibernation
-                if (ApplyDisableHibernation)
-                {
-                    RunPowerShell("powercfg -h off");
-                    count++;
-                }
-
-                GamingStatus = $"Succès ! {count} optimisation(s) appliquée(s). Redémarrez le PC.";
-            }
-            catch (UnauthorizedAccessException)
-            {
-                GamingStatus = "Erreur : Relancer l'application en tant qu'administrateur !";
-            }
-            catch (Exception ex)
-            {
-                GamingStatus = $"Erreur : {ex.Message}";
-            }
+            AuditLog += "=== AUDIT TERMINÉ ===";
+            GamingStatus = "✓ Gaming optimisé !";
         }
 
-        // Méthode utilitaire pour exécuter du PowerShell proprement en tâche de fond
-        private void RunPowerShell(string command)
+        private async Task RunRegStep(string message, Action action)
         {
-            ProcessStartInfo psi = new ProcessStartInfo
+            AuditLog += message + "\n";
+            string errorMsg = "";
+            bool success = await Task.Run(() => {
+                try { action(); return true; }
+                catch (Exception ex) { errorMsg = ex.Message; return false; }
+            });
+
+            if (!success)
             {
-                FileName = "powershell.exe",
-                Arguments = $"-Command \"{command}\"",
-                WindowStyle = ProcessWindowStyle.Hidden,
-                CreateNoWindow = true
-            };
-            using (Process? process = Process.Start(psi))
-            {
-                process?.WaitForExit();
+                if (errorMsg.Contains("0x80070005") || errorMsg.ToLower().Contains("refus") || errorMsg.ToLower().Contains("denied"))
+                {
+                    errorMsg += " (Note : Privilèges Administrateur requis)";
+                }
+                AuditLog += $"❌ ÉCHEC : {errorMsg}\n\n";
             }
+            else
+            {
+                AuditLog += "✅ SUCCÈS\n\n";
+            }
+            await Task.Delay(400);
+        }
+
+        private async Task RunCmdStep(string message, string cmd, string args)
+        {
+            AuditLog += message + "\n";
+            string errorOutput = "";
+
+            bool success = await Task.Run(() => {
+                try
+                {
+                    ProcessStartInfo psi = new ProcessStartInfo
+                    {
+                        FileName = cmd,
+                        Arguments = args,
+                        WindowStyle = ProcessWindowStyle.Hidden,
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardError = true
+                    };
+                    using (Process? p = Process.Start(psi))
+                    {
+                        errorOutput = p?.StandardError.ReadToEnd() ?? "";
+                        p?.WaitForExit();
+                        return p != null && p.ExitCode == 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    errorOutput = ex.Message;
+                    return false;
+                }
+            });
+
+            if (!string.IsNullOrWhiteSpace(errorOutput))
+            {
+                errorOutput = errorOutput.Split('\n')[0].Trim();
+            }
+            else if (!success)
+            {
+                errorOutput = "Erreur système inconnue.";
+            }
+
+            if (!success)
+            {
+                if (errorOutput.Contains("0x80070005") || errorOutput.ToLower().Contains("refus") || errorOutput.ToLower().Contains("denied"))
+                {
+                    errorOutput += " (Note : Lancez l'application en tant qu'Administrateur)";
+                }
+                AuditLog += $"❌ ÉCHEC : {errorOutput}\n\n";
+            }
+            else
+            {
+                AuditLog += "✅ SUCCÈS\n\n";
+            }
+            await Task.Delay(400);
         }
     }
 }

@@ -1,53 +1,79 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.Versioning;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace FPSBoostPro.ViewModels
 {
+    [SupportedOSPlatform("windows")]
     public partial class ServicesViewModel : ObservableObject
     {
         [ObservableProperty]
-        private string _serviceStatus = "Prêt à optimiser les services.";
+        private string _serviceStatus = "Prêt à optimiser.";
+
+        // Nouvelle propriété pour la console d'audit
+        [ObservableProperty]
+        private string _auditLog = "En attente du lancement...\n";
 
         [RelayCommand]
-        private void DisableServices()
+        private async Task DisableServices()
         {
-            ServiceStatus = "Optimisation des services en cours...";
+            ServiceStatus = "Optimisation en cours...";
+            AuditLog = "=== DÉBUT DE L'AUDIT DES SERVICES ===\n\n";
+            int successCount = 0;
 
-            try
+            string[] servicesToDisable = { "DiagTrack", "WSearch", "SysMain" };
+
+            // On boucle de manière asynchrone pour mettre à jour l'interface à chaque étape
+            foreach (string service in servicesToDisable)
             {
-                // On utilise PowerShell en arrière-plan pour désactiver proprement les services (nécessite d'être Admin)
-                string[] servicesToDisable = { "DiagTrack", "WSearch", "SysMain" };
-                int optimizedCount = 0;
+                AuditLog += $"⏳ Traitement du service : {service}...\n";
 
-                foreach (string service in servicesToDisable)
+                // On exécute la commande PowerShell en arrière-plan
+                bool success = await Task.Run(() =>
                 {
-                    // Commande PowerShell pour arrêter et désactiver le service
-                    string args = $"-Command \"Stop-Service -Name '{service}' -Force; Set-Service -Name '{service}' -StartupType Disabled\"";
-
-                    ProcessStartInfo psi = new ProcessStartInfo
+                    try
                     {
-                        FileName = "powershell.exe",
-                        Arguments = args,
-                        Verb = "runas", // Force la demande de droits d'administrateur
-                        WindowStyle = ProcessWindowStyle.Hidden,
-                        CreateNoWindow = true
-                    };
+                        string args = $"-Command \"Stop-Service -Name '{service}' -Force; Set-Service -Name '{service}' -StartupType Disabled\"";
+                        ProcessStartInfo psi = new ProcessStartInfo
+                        {
+                            FileName = "powershell.exe",
+                            Arguments = args,
+                            WindowStyle = ProcessWindowStyle.Hidden,
+                            CreateNoWindow = true
+                        };
 
-                    using (Process? process = Process.Start(psi))
-                    {
-                        process?.WaitForExit();
-                        optimizedCount++;
+                        using (Process? process = Process.Start(psi))
+                        {
+                            process?.WaitForExit();
+                            return process != null && process.ExitCode == 0;
+                        }
                     }
+                    catch
+                    {
+                        return false;
+                    }
+                });
+
+                // On met à jour l'écran avec le résultat
+                if (success)
+                {
+                    AuditLog += $"✅ SUCCÈS : {service} désactivé.\n\n";
+                    successCount++;
+                }
+                else
+                {
+                    AuditLog += $"❌ ÉCHEC : Impossible de désactiver {service} (Droits Admin ?).\n\n";
                 }
 
-                ServiceStatus = $"Optimisation terminée ! {optimizedCount} services gourmands ont été désactivés.";
+                // Petite pause visuelle pour bien voir le texte défiler
+                await Task.Delay(400);
             }
-            catch (Exception ex)
-            {
-                ServiceStatus = $"Erreur lors de l'optimisation : {ex.Message}";
-            }
+
+            AuditLog += $"=== TERMINÉ : {successCount}/{servicesToDisable.Length} services optimisés ===";
+            ServiceStatus = "✓ Audit terminé !";
         }
     }
 }

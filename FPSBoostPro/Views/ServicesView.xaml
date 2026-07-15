@@ -6,55 +6,27 @@
     <Grid Margin="30,20,30,20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Margin="10,0,0,30">
-            <TextBlock Text="S E R V I C E S   S Y S T È M E" FontFamily="Segoe UI Semibold" FontSize="11" FontWeight="Bold" Foreground="#F59E0B"/>
-            <TextBlock Text="Gestion des Services" FontFamily="Segoe UI Light" FontSize="36" Foreground="White" Margin="0,5,0,0"/>
-            <TextBlock Text="Allégez Windows en coupant les processus d'arrière-plan inutiles." FontFamily="Segoe UI" Foreground="#9CA3AF" FontSize="13" Margin="0,5,0,0"/>
+        <StackPanel Grid.Row="0" Margin="10,0,0,20">
+            <TextBlock Text="S E R V I C E S" FontFamily="Segoe UI Semibold" FontSize="11" FontWeight="Bold" Foreground="#8B5CF6"/>
+            <TextBlock Text="Désactiver les services inutiles" FontFamily="Segoe UI Light" FontSize="36" Foreground="White"/>
         </StackPanel>
 
-        <Grid Grid.Row="1" Margin="10">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+        <StackPanel Grid.Row="1" Margin="10,0,10,20">
+            <TextBlock Text="ℹ️ Cette action désactive les services Windows gourmands en arrière-plan (Télémétrie, Superfetch, Recherche) pour libérer de la mémoire RAM et du CPU." 
+                       Foreground="#9CA3AF" FontSize="13" TextWrapping="Wrap" Margin="0,0,0,15"/>
 
-            <Border Background="#1F2937" CornerRadius="16" Padding="25" BorderBrush="#374151" BorderThickness="1" VerticalAlignment="Top">
-                <StackPanel>
-                    <TextBlock Text="Services qui seront arrêtés et désactivés :" FontFamily="Segoe UI Semibold" FontSize="18" Foreground="White" Margin="0,0,0,20"/>
+            <Button Content="Optimiser les services" Command="{Binding DisableServicesCommand}" Width="280" Height="48" BorderThickness="0" Cursor="Hand" Background="#8B5CF6" HorizontalAlignment="Left"/>
+            <TextBlock Text="{Binding ServiceStatus}" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="#10B981" Margin="0,15,0,0"/>
+        </StackPanel>
 
-                    <StackPanel Orientation="Horizontal" Margin="0,8">
-                        <TextBlock Text="📊" FontSize="18" Margin="0,0,12,0" VerticalAlignment="Top"/>
-                        <StackPanel>
-                            <TextBlock Text="Télémétrie Windows (DiagTrack)" FontFamily="Segoe UI Semibold" Foreground="#D1D5DB" FontSize="14"/>
-                            <TextBlock Text="Bloque les envois constants de diagnostics et rapports d'utilisation." FontFamily="Segoe UI" Foreground="#9CA3AF" FontSize="12" Margin="0,2,0,0"/>
-                        </StackPanel>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,8">
-                        <TextBlock Text="🔍" FontSize="18" Margin="0,0,12,0" VerticalAlignment="Top"/>
-                        <StackPanel>
-                            <TextBlock Text="Indexation de recherche (WSearch)" FontFamily="Segoe UI Semibold" Foreground="#D1D5DB" FontSize="14"/>
-                            <TextBlock Text="Coupe le scan permanent de fichiers pour éliminer les micro-saccades." FontFamily="Segoe UI" Foreground="#9CA3AF" FontSize="12" Margin="0,2,0,0"/>
-                        </StackPanel>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,8">
-                        <TextBlock Text="💾" FontSize="18" Margin="0,0,12,0" VerticalAlignment="Top"/>
-                        <StackPanel>
-                            <TextBlock Text="Windows SysMain (Superfetch)" FontFamily="Segoe UI Semibold" Foreground="#D1D5DB" FontSize="14"/>
-                            <TextBlock Text="Arrête la mise en cache agressive pour libérer du CPU et des accès disques." FontFamily="Segoe UI" Foreground="#9CA3AF" FontSize="12" Margin="0,2,0,0"/>
-                        </StackPanel>
-                    </StackPanel>
-                </StackPanel>
-            </Border>
-
-            <StackPanel Grid.Row="1" Margin="0,20,0,0" HorizontalAlignment="Center">
-                <Button Content="Désactiver les Services Inutiles" Width="300" Height="48" BorderThickness="0" Cursor="Hand" Background="#F59E0B"/>
-                <TextBlock Text="{Binding ServiceStatus}" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="#F59E0B" HorizontalAlignment="Center" Margin="0,15,0,0"/>
-            </StackPanel>
-        </Grid>
+        <Border Grid.Row="2" Background="#111827" CornerRadius="12" BorderBrush="#374151" BorderThickness="1" Margin="10,0,10,10">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="15">
+                <TextBlock Text="{Binding AuditLog}" FontFamily="Consolas" FontSize="14" Foreground="#D1D5DB" TextWrapping="Wrap"/>
+            </ScrollViewer>
+        </Border>
     </Grid>
 </UserControl>

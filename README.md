@@ -32,8 +32,8 @@ Cette application a été conçue en respectant les meilleures pratiques de dév
 
 * Onglet Principal (Dashboard)
 <img width="1120" height="653" alt="image" src="https://github.com/user-attachments/assets/af1cf65f-d11c-442e-b83b-52e0fba31be1" />
-* <img width="841" height="624" alt="image" src="https://github.com/user-attachments/assets/e461c08b-3106-4955-ac41-bef37e3a798f" />
-* <img width="814" height="609" alt="image" src="https://github.com/user-attachments/assets/d9568a89-9387-4751-8fb2-1e03643d2c89" />
+<img width="841" height="624" alt="image" src="https://github.com/user-attachments/assets/e461c08b-3106-4955-ac41-bef37e3a798f" />
+<img width="814" height="609" alt="image" src="https://github.com/user-attachments/assets/d9568a89-9387-4751-8fb2-1e03643d2c89" />
 
 
 ---

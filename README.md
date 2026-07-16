@@ -54,9 +54,9 @@ Test de performance réel effectué sur le jeu **Unturned** avec un processeur *
 ## 📸 Aperçu de l'interface
 
 * **Tableau de bord & Console d'Audit**
-
- <img width="1167" height="951" alt="image" src="https://github.com/user-attachments/assets/4ad35981-9977-471a-8f1f-0b8e3ca0dcdc" />
- 
+<p align="center">
+ <img width="600" alt="image" src="https://github.com/user-attachments/assets/4ad35981-9977-471a-8f1f-0b8e3ca0dcdc" />
+ </p>
 ---
 
 ## ⚠️ Sécurité & VM / Sandbox

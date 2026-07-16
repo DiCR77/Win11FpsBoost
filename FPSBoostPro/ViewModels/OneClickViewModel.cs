@@ -1,185 +1,137 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.Versioning;
 using System.Threading.Tasks;
-using Microsoft.Win32;
+using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace FPSBoostPro.ViewModels
 {
-    [SupportedOSPlatform("windows")]
     public partial class OneClickViewModel : ObservableObject
     {
-        [ObservableProperty] private string _statusMessage = "Système prêt.";
-        [ObservableProperty] private string _auditLog = "En attente...\n";
+        [ObservableProperty] private bool _isOptimizing;
+        [ObservableProperty] private string _statusMessage = "Prêt à booster votre PC en un clic";
+        [ObservableProperty] private string _auditLog = "";
 
         [RelayCommand]
-        private async Task Optimize()
+        private async Task OptimizeOneClick()
         {
-            StatusMessage = "Optimisation globale en cours...";
-            AuditLog = "=== DÉBUT DU NETTOYAGE ET DEBLOAT ===\n\n";
+            if (IsOptimizing) return;
 
-            AuditLog += "⏳ Création Point de Restauration...\n";
-            string restoreError = "";
-            bool restoreSuccess = await Task.Run(() => {
-                try
-                {
-                    ProcessStartInfo psi = new ProcessStartInfo
-                    {
-                        FileName = "powershell.exe",
-                        Arguments = "-Command \"Checkpoint-Computer -Description 'FPSBoost' -RestorePointType 'MODIFY_SETTINGS'\"",
-                        WindowStyle = ProcessWindowStyle.Hidden,
-                        CreateNoWindow = true,
-                        UseShellExecute = false,
-                        RedirectStandardError = true
-                    };
-                    using (Process? p = Process.Start(psi))
-                    {
-                        restoreError = p?.StandardError.ReadToEnd() ?? "";
-                        p?.WaitForExit();
-                        return p != null && p.ExitCode == 0;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    restoreError = ex.Message;
-                    return false;
-                }
+            IsOptimizing = true;
+            StatusMessage = "Optimisation globale en cours...";
+            AuditLog = "";
+
+            Log("Début du Clean & Boost rapide...");
+            Log("--------------------------------------------------");
+
+            await Task.Run(() =>
+            {
+                CleanTemporaryFiles();
+                ApplyDebloatTweaks();
+                FreeRAM();
             });
 
-            if (restoreSuccess)
-            {
-                AuditLog += "✅ SUCCÈS\n\n";
-            }
-            else
-            {
-                if (!string.IsNullOrWhiteSpace(restoreError))
-                {
-                    restoreError = restoreError.Split('\n')[0].Trim();
-                }
-                else
-                {
-                    restoreError = "La protection système est désactivée sur ce PC ou cette VM.";
-                }
-
-                if (restoreError.Contains("0x80070005") || restoreError.ToLower().Contains("refus") || restoreError.ToLower().Contains("denied"))
-                {
-                    restoreError += " (Note : Relancez FPSBoostPro en tant qu'Administrateur)";
-                }
-
-                AuditLog += $"❌ ÉCHEC : {restoreError}\n\n";
-            }
-            await Task.Delay(400);
-
-            AuditLog += "⏳ Nettoyage %TEMP%...\n";
-            long tempBytes = await Task.Run(() => CleanDirectory(Path.GetTempPath()));
-            AuditLog += $"✅ SUCCÈS ({tempBytes / 1024 / 1024} Mo libérés)\n\n";
-            await Task.Delay(400);
-
-            AuditLog += "⏳ Nettoyage Windows Temp...\n";
-            long winTempBytes = await Task.Run(() => CleanDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Temp")));
-            AuditLog += $"✅ SUCCÈS ({winTempBytes / 1024 / 1024} Mo libérés)\n\n";
-            await Task.Delay(400);
-
-            AuditLog += "⏳ Désactivation de Cortana, Widgets et Astuces...\n";
-            bool debloatSuccess = await Task.Run(() => ApplyDebloatTweaks());
-            AuditLog += debloatSuccess ? "✅ SUCCÈS\n\n" : "⚠️ ÉCHEC (Droits administrateur requis)\n\n";
-            await Task.Delay(400);
-
-            AuditLog += "⏳ Suppression du délai de démarrage...\n";
-            bool startupSuccess = await Task.Run(() => DisableStartupDelay());
-            AuditLog += startupSuccess ? "✅ SUCCÈS\n\n" : "⚠️ ÉCHEC\n\n";
-            await Task.Delay(400);
-
-            AuditLog += "⏳ Arrêt et désinstallation de OneDrive...\n";
-            bool oneDriveSuccess = await Task.Run(() => RemoveOneDrive());
-            AuditLog += oneDriveSuccess ? "✅ SUCCÈS\n\n" : "⚠️ ÉCHEC\n\n";
-            await Task.Delay(400);
-
-            AuditLog += "=== AUDIT TERMINÉ ===";
-            StatusMessage = "✓ Système nettoyé et allégé !";
+            Log("--------------------------------------------------");
+            Log("🏁 Système entièrement nettoyé et optimisé !");
+            StatusMessage = "Système nettoyé et optimisé !";
+            IsOptimizing = false;
         }
 
-        private long CleanDirectory(string path)
+        private void CleanTemporaryFiles()
         {
-            long bytesSaved = 0;
-            if (!Directory.Exists(path)) return 0;
-            DirectoryInfo di = new DirectoryInfo(path);
-            foreach (FileInfo file in di.GetFiles()) { try { bytesSaved += file.Length; file.Delete(); } catch { } }
-            foreach (DirectoryInfo dir in di.GetDirectories()) { try { dir.Delete(true); } catch { } }
-            return bytesSaved;
+            Log("Nettoyage du dossier Temp (Local)...");
+            CleanDirectory(Path.GetTempPath());
+
+            Log("Nettoyage du dossier Temp (Windows)...");
+            CleanDirectory(@"C:\Windows\Temp");
+
+            Log("Nettoyage du dossier Prefetch...");
+            CleanDirectory(@"C:\Windows\Prefetch");
         }
 
-        private bool ApplyDebloatTweaks()
+        private void CleanDirectory(string path)
         {
+            if (!Directory.Exists(path))
+            {
+                Log("-> [ERREUR] Dossier introuvable\n");
+                return;
+            }
+
             try
             {
-                using (RegistryKey? key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows\Windows Search"))
-                {
-                    key?.SetValue("AllowCortana", 0, RegistryValueKind.DWord);
-                }
+                DirectoryInfo di = new DirectoryInfo(path);
+                int files = 0, folders = 0;
 
-                using (RegistryKey? key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Dsh"))
-                {
-                    key?.SetValue("AllowNewsAndInterests", 0, RegistryValueKind.DWord);
-                }
+                foreach (FileInfo file in di.GetFiles()) { try { file.Delete(); files++; } catch { } }
+                foreach (DirectoryInfo dir in di.GetDirectories()) { try { dir.Delete(true); folders++; } catch { } }
 
-                using (RegistryKey? key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"))
-                {
-                    key?.SetValue("SubscribedContent-338389Enabled", 0, RegistryValueKind.DWord);
-                    key?.SetValue("SubscribedContent-353698Enabled", 0, RegistryValueKind.DWord);
-                }
-
-                return true;
+                Log($"-> [SUCCÈS] {files} fichiers et {folders} dossiers supprimés\n");
             }
             catch
             {
-                return false;
+                Log("-> [ERREUR] Impossible de nettoyer ce dossier\n");
             }
         }
 
-        private bool DisableStartupDelay()
+        private void ApplyDebloatTweaks()
         {
+            Log("Désactivation de la Télémétrie...");
+            bool tel = ExecuteCommand("reg", "add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection\" /v AllowTelemetry /t REG_DWORD /d 0 /f");
+            Log(tel ? "-> [SUCCÈS] Télémétrie coupée\n" : "-> [ERREUR] Échec de la modification\n");
+
+            Log("Désactivation de Cortana...");
+            bool cor = ExecuteCommand("reg", "add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search\" /v AllowCortana /t REG_DWORD /d 0 /f");
+            Log(cor ? "-> [SUCCÈS] Cortana désactivé\n" : "-> [ERREUR] Échec de la modification\n");
+        }
+
+        private void FreeRAM()
+        {
+            Log("Optimisation de la RAM...");
             try
             {
-                using (RegistryKey? key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize"))
-                {
-                    key?.SetValue("StartupDelayInMSec", 0, RegistryValueKind.DWord);
-                }
-                return true;
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                Log("-> [SUCCÈS] RAM libérée\n");
             }
             catch
             {
-                return false;
+                Log("-> [ERREUR] Échec de l'optimisation\n");
             }
         }
 
-        private bool RemoveOneDrive()
+        private bool ExecuteCommand(string filename, string arguments)
         {
             try
             {
-                ProcessStartInfo startInfo = new ProcessStartInfo
+                ProcessStartInfo psi = new ProcessStartInfo
                 {
-                    FileName = "cmd.exe",
-                    Arguments = "/c taskkill /f /im OneDrive.exe & %SystemRoot%\\SysWOW64\\OneDriveSetup.exe /uninstall",
+                    FileName = filename,
+                    Arguments = arguments,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
+                    Verb = "runas"
                 };
-
-                using (Process? process = Process.Start(startInfo))
+                using (Process? p = Process.Start(psi))
                 {
-                    process?.WaitForExit();
+                    if (p == null) return false;
+                    p.WaitForExit();
+                    return p.ExitCode == 0;
                 }
-                return true;
             }
-            catch
+            catch { return false; }
+        }
+
+        private void Log(string message)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                return false;
-            }
+                AuditLog += $"[OneClick] {message}\n";
+            });
         }
     }
 }

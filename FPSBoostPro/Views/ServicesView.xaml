@@ -14,15 +14,67 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
+        <Style TargetType="{x:Type RepeatButton}" x:Key="ScrollBarButton">
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Focusable" Value="false"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Border Background="Transparent"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type Thumb}" x:Key="ScrollBarThumb">
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Rectangle Fill="#8B5CF6" RadiusX="4" RadiusY="4" Width="8"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type ScrollBar}">
+            <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
+            <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Width" Value="12"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ScrollBar}">
+                        <Grid>
+                            <Border Background="Transparent" CornerRadius="4"/>
+                            <Track x:Name="PART_Track" IsDirectionReversed="true" IsEnabled="{TemplateBinding IsEnabled}">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Style="{StaticResource ScrollBarButton}" Command="{x:Static ScrollBar.PageUpCommand}" />
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Style="{StaticResource ScrollBarButton}" Command="{x:Static ScrollBar.PageDownCommand}" />
+                                </Track.IncreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Style="{StaticResource ScrollBarThumb}" />
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <Grid Margin="30,20,30,20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="2*"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="130"/>
+            <RowDefinition Height="1*" MinHeight="200"/>
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Margin="10,0,0,20">
@@ -30,20 +82,16 @@
             <TextBlock Text="Désactiver les services inutiles" FontFamily="Segoe UI Light" FontSize="36" Foreground="White"/>
         </StackPanel>
 
-        <Border Grid.Row="1" Background="#1B1E29" CornerRadius="10" Padding="14,12" Margin="10,0,10,20"
-                BorderBrush="#2A2E3A" BorderThickness="1">
+        <Border Grid.Row="1" Background="#1B1E29" CornerRadius="10" Padding="14,12" Margin="10,0,10,20" BorderBrush="#2A2E3A" BorderThickness="1">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Border Width="20" Height="20" CornerRadius="10" Background="#8B5CF633" VerticalAlignment="Top">
-                    <TextBlock Text="i" FontFamily="Georgia" FontStyle="Italic" FontWeight="Bold" FontSize="13"
-                               Foreground="#A78BFA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="i" FontFamily="Georgia" FontStyle="Italic" FontWeight="Bold" FontSize="13" Foreground="#A78BFA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Border>
-                <TextBlock Grid.Column="1" Margin="12,0,0,0"
-                           Text="Cochez les services que vous souhaitez désactiver. Cela libérera de la mémoire RAM et soulagera le processeur."
-                           Foreground="#9CA3AF" FontSize="13" TextWrapping="Wrap"/>
+                <TextBlock Grid.Column="1" Margin="12,0,0,0" Text="Cochez les services que vous souhaitez désactiver. Cela libérera de la mémoire RAM et soulagera le processeur." Foreground="#9CA3AF" FontSize="13" TextWrapping="Wrap"/>
             </Grid>
         </Border>
 
@@ -78,14 +126,7 @@
         </Border>
 
         <StackPanel Grid.Row="3" Margin="10,0,10,15">
-            <Button Content="Optimiser les services"
-                    Command="{Binding OptimizeSelectedServicesCommand}"
-                    Width="280" Height="48"
-                    BorderThickness="0" Cursor="Hand"
-                    Background="#8B5CF6" Foreground="White"
-                    FontFamily="Segoe UI Semibold" FontSize="14"
-                    HorizontalAlignment="Left"/>
-
+            <Button Content="Optimiser les services" Command="{Binding OptimizeSelectedServicesCommand}" Width="280" Height="48" BorderThickness="0" Cursor="Hand" Background="#8B5CF6" Foreground="White" FontFamily="Segoe UI Semibold" FontSize="14" HorizontalAlignment="Left"/>
             <TextBlock Text="{Binding StatusMessage}" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="#10B981" Margin="0,15,0,0"/>
         </StackPanel>
 
@@ -105,8 +146,8 @@
                     </StackPanel>
                 </Border>
 
-                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="15">
-                    <TextBlock Text="{Binding AuditLog}" FontFamily="Consolas" FontSize="14" Foreground="#D1D5DB" TextWrapping="Wrap"/>
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="15" Background="Transparent">
+                    <TextBlock Text="{Binding AuditLog}" FontFamily="Consolas" FontSize="14" Foreground="#D1D5DB" TextWrapping="Wrap" Background="Transparent"/>
                 </ScrollViewer>
             </Grid>
         </Border>

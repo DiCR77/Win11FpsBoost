@@ -35,7 +35,7 @@
         </Border>
 
         <StackPanel Grid.Row="2" Margin="10,0,10,20">
-            <Button Content="Lancer l'optimisation" Command="{Binding OptimizeCommand}" Width="280" Height="48" BorderThickness="0" Cursor="Hand" Background="#8B5CF6" HorizontalAlignment="Left"/>
+            <Button Content="Lancer l'optimisation" Command="{Binding OptimizeOneClickCommand}" Width="280" Height="48" BorderThickness="0" Cursor="Hand" Background="#8B5CF6" HorizontalAlignment="Left"/>
             <TextBlock Text="{Binding StatusMessage}" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="#10B981" Margin="0,15,0,0"/>
         </StackPanel>
 

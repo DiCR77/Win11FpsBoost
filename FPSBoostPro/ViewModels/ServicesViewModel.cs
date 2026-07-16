@@ -2,105 +2,135 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using FPSBoostPro.Models;
 
 namespace FPSBoostPro.ViewModels
 {
     public partial class ServicesViewModel : ObservableObject
     {
-        public ObservableCollection<ServiceItem> ServicesList { get; set; }
+        [ObservableProperty] private bool _isOptimizing;
+        [ObservableProperty] private string _statusMessage = "Prêt à optimiser les services";
+        [ObservableProperty] private string _auditLog = "";
 
-        private bool _isOptimizing;
-        public bool IsOptimizing
-        {
-            get => _isOptimizing;
-            set => SetProperty(ref _isOptimizing, value);
-        }
-
-        private string _statusMessage = "Prêt à optimiser les services";
-        public string StatusMessage
-        {
-            get => _statusMessage;
-            set => SetProperty(ref _statusMessage, value);
-        }
-
-        public event Action<string>? OnLogReceived;
+        public ObservableCollection<ServiceItem> ServicesList { get; set; } = new();
 
         public ServicesViewModel()
         {
-            ServicesList = new ObservableCollection<ServiceItem>
-            {
-                new ServiceItem { DisplayName = "SysMain (Superfetch)", ServiceNames = ["SysMain"], Description = "Précharge la RAM. À désactiver si vous avez un SSD." },
-                new ServiceItem { DisplayName = "Windows Search", ServiceNames = ["WSearch"], Description = "Indexation des fichiers. Soulage le disque si désactivé." },
-                new ServiceItem { DisplayName = "Spooler d'impression", ServiceNames = ["Spooler"], Description = "Désactiver si vous n'avez pas d'imprimante." },
-                new ServiceItem { DisplayName = "Service Fax", ServiceNames = ["Fax"], Description = "Totalement inutile aujourd'hui." },
-                new ServiceItem { DisplayName = "Bluetooth", ServiceNames = ["bthserv"], Description = "Désactiver si vous n'utilisez aucun appareil Bluetooth." },
-                new ServiceItem { DisplayName = "Registre à distance", ServiceNames = ["RemoteRegistry"], Description = "Sécurité : empêche la modification réseau du registre." },
-                new ServiceItem { DisplayName = "Rapports d'erreurs", ServiceNames = ["WerSvc"], Description = "Évite l'envoi de rapports lourds lors de crashs." },
-                new ServiceItem { DisplayName = "Télémétrie Windows", ServiceNames = ["DiagTrack"], Description = "Désactive la collecte de données Microsoft." },
-                new ServiceItem { DisplayName = "Services Xbox", ServiceNames = ["XblAuthManager", "XblGameSave", "XboxNetApiSvc", "XboxGipSvc"], Description = "Désactiver si vous ne jouez pas aux jeux du Xbox Store." },
-                new ServiceItem { DisplayName = "Assistant Compatibilité", ServiceNames = ["PcaSvc"], Description = "Surveille les vieux programmes. Souvent inutile." }
-            };
+            ServicesList.Add(new ServiceItem { IsSelected = true, ServiceName = "DiagTrack", DisplayName = "Télémetrie Windows (DiagTrack)", Description = "Collecte et envoie vos données d'utilisation à Microsoft." });
+            ServicesList.Add(new ServiceItem { IsSelected = true, ServiceName = "SysMain", DisplayName = "SysMain (Superfetch)", Description = "Précharge des fichiers en RAM. Cause souvent des saccades (stuttering) en jeu." });
+            ServicesList.Add(new ServiceItem { IsSelected = true, ServiceName = "WerSvc", DisplayName = "Rapports d'erreurs Windows", Description = "Envoie des rapports de plantage en arrière-plan." });
+            ServicesList.Add(new ServiceItem { IsSelected = true, ServiceName = "MapsBroker", DisplayName = "Gestionnaire de cartes téléchargées", Description = "Totalement inutile sur un PC de bureau." });
+            ServicesList.Add(new ServiceItem { IsSelected = true, ServiceName = "TrkWks", DisplayName = "Suivi des liaisons distribuées", Description = "Utile uniquement pour les serveurs d'entreprise." });
+
+            ServicesList.Add(new ServiceItem { IsSelected = false, ServiceName = "Spooler", DisplayName = "Spouleur d'impression", Description = "Cochez ceci si vous n'utilisez jamais d'imprimante." });
+            ServicesList.Add(new ServiceItem { IsSelected = false, ServiceName = "WbioSrvc", DisplayName = "Service Biométrique", Description = "Gère les lecteurs d'empreintes/visage. Inutile si vous n'en avez pas." });
+            ServicesList.Add(new ServiceItem { IsSelected = false, ServiceName = "WSearch", DisplayName = "Windows Search", Description = "Indexe les fichiers en arrière-plan. Peut utiliser beaucoup de disque/CPU." });
+            ServicesList.Add(new ServiceItem { IsSelected = false, ServiceName = "XblAuthManager", DisplayName = "Xbox Live Auth Manager", Description = "Désactivez uniquement si vous ne jouez pas aux jeux Microsoft Store/Xbox." });
         }
 
         [RelayCommand]
-        public async Task OptimizeSelectedServicesAsync()
+        private async Task OptimizeSelectedServices()
         {
             if (IsOptimizing) return;
 
             IsOptimizing = true;
-            StatusMessage = "Désactivation en cours...";
-            Log("Début de l'optimisation des services...");
+            StatusMessage = "Désactivation des services en cours...";
+            AuditLog = "";
 
-            await Task.Run(() =>
-            {
-                foreach (var item in ServicesList)
-                {
-                    if (item.IsSelected)
-                    {
-                        foreach (var service in item.ServiceNames)
-                        {
-                            Log($"Désactivation de {service}...");
-                            ExecuteCommand("sc", $"config \"{service}\" start= disabled");
-                            ExecuteCommand("sc", $"stop \"{service}\"");
-                        }
-                    }
-                }
-                Log("✅ Services sélectionnés optimisés !");
-            });
+            Log("Début de l'optimisation des Services...");
+            Log("--------------------------------------------------");
 
-            StatusMessage = "Terminé avec succès !";
+            await Task.Run(() => ApplyServicesTweaks());
+
+            StatusMessage = "Services optimisés avec succès !";
             IsOptimizing = false;
         }
 
-        private void ExecuteCommand(string filename, string arguments)
+        private void ApplyServicesTweaks()
         {
             try
             {
-                ProcessStartInfo startInfo = new ProcessStartInfo
+                int count = 0;
+                foreach (var service in ServicesList)
                 {
-                    FileName = filename,
-                    Arguments = arguments,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    Verb = "runas"
-                };
+                    if (service.IsSelected)
+                    {
+                        Log($"Configuration de : {service.DisplayName}...");
 
-                using (Process? process = Process.Start(startInfo))
+                        // Arrête le service
+                        ExecuteCommand("sc", $"stop {service.ServiceName}");
+                        // Désactive le démarrage automatique
+                        bool success = ExecuteCommand("sc", $"config {service.ServiceName} start= disabled");
+
+                        if (success)
+                        {
+                            Log("-> [SUCCÈS] Service désactivé\n");
+                            count++;
+                        }
+                        else
+                        {
+                            Log("-> [ERREUR] Impossible de modifier la configuration\n");
+                        }
+                    }
+                }
+
+                Log("--------------------------------------------------");
+                if (count == 0)
                 {
-                    process?.WaitForExit();
+                    Log("🏁 Aucun service n'a été modifié.");
+                }
+                else
+                {
+                    Log($"🏁 {count} service(s) désactivé(s) avec succès !");
                 }
             }
             catch (Exception ex)
             {
-                Log($"Erreur ({filename}) : {ex.Message}");
+                Log($"⚠️ Erreur critique : {ex.Message}");
             }
         }
 
-        private void Log(string message) => OnLogReceived?.Invoke($"[Services] {message}");
+        private bool ExecuteCommand(string filename, string arguments)
+        {
+            try
+            {
+                ProcessStartInfo psi = new ProcessStartInfo
+                {
+                    FileName = filename,
+                    Arguments = arguments,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    Verb = "runas"
+                };
+                using (Process? p = Process.Start(psi))
+                {
+                    if (p == null) return false;
+                    p.WaitForExit();
+                    return p.ExitCode == 0;
+                }
+            }
+            catch { return false; }
+        }
+
+        private void Log(string message)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                AuditLog += $"[Services] {message}\n";
+            });
+        }
+    }
+
+    public partial class ServiceItem : ObservableObject
+    {
+        [ObservableProperty] private bool _isSelected;
+        [ObservableProperty] private string _serviceName = "";
+        [ObservableProperty] private string _displayName = "";
+        [ObservableProperty] private string _description = "";
     }
 }

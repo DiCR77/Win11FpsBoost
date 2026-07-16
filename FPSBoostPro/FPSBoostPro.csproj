@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="vlogo.ico" />
+    <Resource Include="vlogo.ico" />
   </ItemGroup>
 
   <ItemGroup>

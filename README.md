@@ -8,12 +8,11 @@
 Activez le plein potentiel de votre machine ! **DiFPSBoost** est une application moderne développée en **C# / WPF** (architecture MVVM) permettant d'optimiser Windows 11 pour le gaming, de réduire la latence (ping) et de nettoyer le système en toute sécurité.
 
 ---
-🛡️ Workflow Sécurisé : "D'abord la sécurité"
-Nous avons repensé l'expérience utilisateur pour garantir une optimisation sans risque. Le tableau de bord privilégie désormais un workflow en deux étapes :
+## 🛡️ Workflow Sécurisé : "D'abord la sécurité"
 
-Point de Restauration (Priorité) : L'application intègre la création automatique de points de restauration système (Checkpoint-Computer) avant toute modification.
-
-Optimisation en un clic : Une fois la sécurité garantie, lancez le nettoyage et les tweaks système en toute sérénité.
+* **Nous avons repensé l'expérience utilisateur pour garantir une optimisation sans risque. Le tableau de bord privilégie désormais un workflow en deux étapes :
+* **Point de Restauration (Priorité) : L'application intègre la création automatique de points de restauration système (Checkpoint-Computer) avant toute modification.
+* **Optimisation en un clic : Une fois la sécurité garantie, lancez le nettoyage et les tweaks système en toute sérénité.
 
 ---
 ## 🚀 Fonctionnalités principales

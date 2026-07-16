@@ -21,25 +21,25 @@ namespace FPSBoostPro.ViewModels
 
         public DashboardViewModel()
         {
-            // 1. On configure le Timer immédiatement
             _timer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(1)
             };
             _timer.Tick += Timer_Tick;
 
-            // 2. On charge les compteurs en tâche de fond (asynchrone) pour ne pas bloquer l'UI au démarrage
-            Task.Run(() =>
+            Task.Run(async () =>
             {
                 try
                 {
                     _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
                     _ramCounter = new PerformanceCounter("Memory", "% Committed Bytes In Use");
 
-                    // On force une première mesure en tâche de fond (la première NextValue renvoie toujours 0)
+                    // 1re lecture ignorée
                     _cpuCounter.NextValue();
 
-                    // Une fois prêts, on lance le Timer sur le thread principal de l'interface
+                    // Pause indispensable pour que Windows calcule la vraie valeur
+                    await Task.Delay(500);
+
                     App.Current.Dispatcher.Invoke(() =>
                     {
                         _timer.Start();
@@ -70,6 +70,10 @@ namespace FPSBoostPro.ViewModels
             {
                 double cpuVal = Math.Round(_cpuCounter.NextValue(), 0);
                 double ramVal = Math.Round(_ramCounter.NextValue(), 0);
+
+                // Sécurité anti-bug de Windows
+                if (cpuVal > 100) cpuVal = 100;
+                if (cpuVal < 0) cpuVal = 0;
 
                 CpuUsageValue = cpuVal;
                 RamUsageValue = ramVal;

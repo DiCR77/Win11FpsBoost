@@ -3,35 +3,132 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="Transparent">
 
+    <UserControl.Resources>
+
+        <!-- ==================== ICONES VECTORIELLES ==================== -->
+
+        <Geometry x:Key="IconChip">M6,6 L18,6 L18,18 L6,18 Z M9,3 L9,6 M13,3 L13,6 M9,18 L9,21 M13,18 L13,21 M3,9 L6,9 M3,13 L6,13 M18,9 L21,9 M18,13 L21,13 M9,9 L15,9 L15,15 L9,15 Z</Geometry>
+        <Geometry x:Key="IconBolt">M13,2 L4,14 L11,14 L10,22 L20,9 L13,9 Z</Geometry>
+
+        <!-- ==================== EFFET GLOW ==================== -->
+
+        <DropShadowEffect x:Key="GlowGreen" Color="#10B981" BlurRadius="35" ShadowDepth="0" Opacity="0.55"/>
+        <DropShadowEffect x:Key="GlowBlue" Color="#3B82F6" BlurRadius="35" ShadowDepth="0" Opacity="0.55"/>
+        <DropShadowEffect x:Key="CardShadow" Color="#000000" BlurRadius="20" ShadowDepth="4" Opacity="0.35"/>
+
+        <!-- ==================== STYLE CARTE (avec hover) ==================== -->
+
+        <Style x:Key="StatCard" TargetType="Border">
+            <Setter Property="Background" Value="#1A1D27"/>
+            <Setter Property="CornerRadius" Value="18"/>
+            <Setter Property="Padding" Value="28"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#2A2E3A"/>
+            <Setter Property="Effect" Value="{StaticResource CardShadow}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#1E212C"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- ==================== PROGRESSBAR ARRONDIE ==================== -->
+
+        <Style x:Key="PillProgressBar" TargetType="ProgressBar">
+            <Setter Property="Height" Value="8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="#0F1117"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Grid x:Name="TemplateRoot">
+                            <Border CornerRadius="4" Background="{TemplateBinding Background}"/>
+                            <Border x:Name="PART_Track" CornerRadius="4" ClipToBounds="True">
+                                <Border x:Name="PART_Indicator"
+                                        CornerRadius="4"
+                                        HorizontalAlignment="Left"
+                                        Background="{TemplateBinding Foreground}"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </UserControl.Resources>
+
     <Grid Margin="30,20,30,20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Margin="10,0,0,30">
-            <TextBlock Text="T A B L E A U   D E   B O R D" 
-                       FontFamily="Segoe UI Semibold" 
-                       FontSize="11" 
-                       FontWeight="Bold" 
-                       Foreground="#3B82F6"/>
+        <!-- ==================== HEADER ==================== -->
 
-            <TextBlock Text="Moniteur Système" 
-                       FontFamily="Segoe UI Light" 
-                       FontSize="36" 
-                       Foreground="White" 
-                       Margin="0,5,0,0"/>
+        <Grid Grid.Row="0" Margin="10,0,0,30">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Statistiques et état de santé de votre PC en temps réel." 
-                       FontFamily="Segoe UI" 
-                       Foreground="#9CA3AF" 
-                       FontSize="13" 
-                       Margin="0,5,0,0"/>
-        </StackPanel>
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="T A B L E A U   D E   B O R D" 
+                           FontFamily="Segoe UI Semibold" 
+                           FontSize="11" 
+                           FontWeight="Bold" 
+                           Foreground="#3B82F6"/>
 
-        <UniformGrid Grid.Row="1" Columns="2" Rows="1">
+                <TextBlock Text="Moniteur Système" 
+                           FontFamily="Segoe UI Light" 
+                           FontSize="36" 
+                           Foreground="White" 
+                           Margin="0,5,0,0"/>
 
-            <Border Background="#1F2937" CornerRadius="16" Margin="10" Padding="25" BorderBrush="#374151" BorderThickness="1">
+                <TextBlock Text="Statistiques et état de santé de votre PC en temps réel." 
+                           FontFamily="Segoe UI" 
+                           Foreground="#9CA3AF" 
+                           FontSize="13" 
+                           Margin="0,5,0,0"/>
+            </StackPanel>
+
+            <!-- Badge "live" -->
+            <Border Grid.Column="1" 
+                    Background="#16241C" 
+                    CornerRadius="20" 
+                    Padding="14,8" 
+                    VerticalAlignment="Top"
+                    BorderBrush="#1F3A2A" 
+                    BorderThickness="1">
+                <StackPanel Orientation="Horizontal">
+                    <Ellipse Width="8" Height="8" Fill="#10B981" VerticalAlignment="Center">
+                        <Ellipse.Triggers>
+                            <EventTrigger RoutedEvent="Loaded">
+                                <BeginStoryboard>
+                                    <Storyboard RepeatBehavior="Forever">
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                         From="1.0" To="0.25" Duration="0:0:1"
+                                                         AutoReverse="True"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Ellipse.Triggers>
+                    </Ellipse>
+                    <TextBlock Text="Direct" Foreground="#10B981" FontFamily="Segoe UI Semibold" FontSize="12" Margin="8,0,0,0"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- ==================== CARTES ==================== -->
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- CPU -->
+            <Border Grid.Column="0" Style="{StaticResource StatCard}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -40,40 +137,40 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0" Orientation="Horizontal">
-                        <TextBlock Text="💻" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="Processeur (CPU)" 
-                                   FontFamily="Segoe UI Semibold" 
-                                   Foreground="#D1D5DB" 
-                                   FontSize="16" 
-                                   VerticalAlignment="Center"/>
+                        <Border Background="#10B98122" CornerRadius="10" Width="38" Height="38" Margin="0,0,12,0">
+                            <Viewbox Width="18" Height="18">
+                                <Path Data="{StaticResource IconChip}" Stroke="#10B981" StrokeThickness="1.6" StrokeLineJoin="Round"/>
+                            </Viewbox>
+                        </Border>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Processeur" FontFamily="Segoe UI Semibold" Foreground="#E5E7EB" FontSize="15"/>
+                            <TextBlock Text="CPU" FontFamily="Segoe UI" Foreground="#6B7280" FontSize="11"/>
+                        </StackPanel>
                     </StackPanel>
 
                     <TextBlock Grid.Row="1" 
                                Text="{Binding CpuUsage}" 
-                               FontFamily="Segoe UI Semibold" 
+                               FontFamily="Segoe UI Light" 
                                Foreground="#10B981" 
-                               FontSize="72" 
-                               FontWeight="Bold" 
+                               FontSize="76" 
                                HorizontalAlignment="Center" 
-                               VerticalAlignment="Center"/>
+                               VerticalAlignment="Center"
+                               Effect="{StaticResource GlowGreen}"/>
 
                     <StackPanel Grid.Row="2" Margin="0,10,0,0">
-                        <TextBlock Text="Charge globale du processeur" 
-                                   FontFamily="Segoe UI" 
-                                   Foreground="#6B7280" 
-                                   FontSize="11" 
-                                   Margin="0,0,0,8"/>
-                        <ProgressBar Height="6" 
+                        <Grid Margin="0,0,0,8">
+                            <TextBlock Text="Charge globale" FontFamily="Segoe UI" Foreground="#6B7280" FontSize="11" HorizontalAlignment="Left"/>
+                        </Grid>
+                        <ProgressBar Style="{StaticResource PillProgressBar}"
                                      Value="{Binding CpuUsageValue}" 
                                      Maximum="100" 
-                                     Background="#111827" 
-                                     Foreground="#10B981" 
-                                     BorderThickness="0"/>
+                                     Foreground="#10B981"/>
                     </StackPanel>
                 </Grid>
             </Border>
 
-            <Border Background="#1F2937" CornerRadius="16" Margin="10" Padding="25" BorderBrush="#374151" BorderThickness="1">
+            <!-- RAM -->
+            <Border Grid.Column="1" Style="{StaticResource StatCard}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -82,39 +179,38 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0" Orientation="Horizontal">
-                        <TextBlock Text="⚡" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="Mémoire Vive (RAM)" 
-                                   FontFamily="Segoe UI Semibold" 
-                                   Foreground="#D1D5DB" 
-                                   FontSize="16" 
-                                   VerticalAlignment="Center"/>
+                        <Border Background="#3B82F622" CornerRadius="10" Width="38" Height="38" Margin="0,0,12,0">
+                            <Viewbox Width="16" Height="16">
+                                <Path Data="{StaticResource IconBolt}" Fill="#3B82F6" Stretch="Uniform"/>
+                            </Viewbox>
+                        </Border>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Mémoire Vive" FontFamily="Segoe UI Semibold" Foreground="#E5E7EB" FontSize="15"/>
+                            <TextBlock Text="RAM" FontFamily="Segoe UI" Foreground="#6B7280" FontSize="11"/>
+                        </StackPanel>
                     </StackPanel>
 
                     <TextBlock Grid.Row="1" 
                                Text="{Binding RamUsage}" 
-                               FontFamily="Segoe UI Semibold" 
+                               FontFamily="Segoe UI Light" 
                                Foreground="#3B82F6" 
-                               FontSize="72" 
-                               FontWeight="Bold" 
+                               FontSize="76" 
                                HorizontalAlignment="Center" 
-                               VerticalAlignment="Center"/>
+                               VerticalAlignment="Center"
+                               Effect="{StaticResource GlowBlue}"/>
 
                     <StackPanel Grid.Row="2" Margin="0,10,0,0">
-                        <TextBlock Text="Utilisation de la mémoire physique" 
-                                   FontFamily="Segoe UI" 
-                                   Foreground="#6B7280" 
-                                   FontSize="11" 
-                                   Margin="0,0,0,8"/>
-                        <ProgressBar Height="6" 
+                        <Grid Margin="0,0,0,8">
+                            <TextBlock Text="Utilisation physique" FontFamily="Segoe UI" Foreground="#6B7280" FontSize="11" HorizontalAlignment="Left"/>
+                        </Grid>
+                        <ProgressBar Style="{StaticResource PillProgressBar}"
                                      Value="{Binding RamUsageValue}" 
                                      Maximum="100" 
-                                     Background="#111827" 
-                                     Foreground="#3B82F6" 
-                                     BorderThickness="0"/>
+                                     Foreground="#3B82F6"/>
                     </StackPanel>
                 </Grid>
             </Border>
 
-        </UniformGrid>
+        </Grid>
     </Grid>
 </UserControl>

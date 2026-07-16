@@ -7,6 +7,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -15,18 +16,48 @@
             <TextBlock Text="Performances maximales" FontFamily="Segoe UI Light" FontSize="36" Foreground="White"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Margin="10,0,10,20">
-            <TextBlock Text="ℹ️ Débloque et active le mode d'alimentation caché 'Performances optimales' de Windows." 
-                       Foreground="#9CA3AF" FontSize="13" TextWrapping="Wrap" Margin="0,0,0,15"/>
+        <Border Grid.Row="1" Background="#1B1E29" CornerRadius="10" Padding="14,12" Margin="10,0,10,20"
+                BorderBrush="#2A2E3A" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Width="20" Height="20" CornerRadius="10" Background="#8B5CF633" VerticalAlignment="Top">
+                    <TextBlock Text="i" FontFamily="Georgia" FontStyle="Italic" FontWeight="Bold" FontSize="13"
+                               Foreground="#A78BFA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <TextBlock Grid.Column="1" Margin="12,0,0,0"
+                           Text="Active le plan Performances Ultimes, désactive la mise en veille USB/Disques, supprime le Core Parking et force le CPU à 100%."
+                           Foreground="#9CA3AF" FontSize="13" TextWrapping="Wrap"/>
+            </Grid>
+        </Border>
 
+        <StackPanel Grid.Row="2" Margin="10,0,10,20">
             <Button Content="Optimiser l'énergie" Command="{Binding OptimizePowerCommand}" Width="280" Height="48" BorderThickness="0" Cursor="Hand" Background="#8B5CF6" HorizontalAlignment="Left"/>
             <TextBlock Text="{Binding PowerStatus}" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="#10B981" Margin="0,15,0,0"/>
         </StackPanel>
 
-        <Border Grid.Row="2" Background="#111827" CornerRadius="12" BorderBrush="#374151" BorderThickness="1" Margin="10,0,10,10">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="15">
-                <TextBlock Text="{Binding AuditLog}" FontFamily="Consolas" FontSize="14" Foreground="#D1D5DB" TextWrapping="Wrap"/>
-            </ScrollViewer>
+        <Border Grid.Row="3" Background="#111827" CornerRadius="12" BorderBrush="#2A2E3A" BorderThickness="1" Margin="10,0,10,10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" BorderBrush="#2A2E3A" BorderThickness="0,0,0,1" Padding="14,10">
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="9" Height="9" Fill="#EF4444" Margin="0,0,5,0"/>
+                        <Ellipse Width="9" Height="9" Fill="#F59E0B" Margin="0,0,5,0"/>
+                        <Ellipse Width="9" Height="9" Fill="#10B981" Margin="0,0,10,0"/>
+                        <TextBlock Text="Journal d'activité" FontFamily="Consolas" FontSize="12" Foreground="#6B7280"/>
+                    </StackPanel>
+                </Border>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="15">
+                    <TextBlock Text="{Binding AuditLog}" FontFamily="Consolas" FontSize="14" Foreground="#D1D5DB" TextWrapping="Wrap"/>
+                </ScrollViewer>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>

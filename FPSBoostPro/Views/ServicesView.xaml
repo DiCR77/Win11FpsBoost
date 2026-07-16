@@ -3,11 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="Transparent">
 
+    <UserControl.Resources>
+        <Style x:Key="ServiceRow" TargetType="Border">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#242836"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
     <Grid Margin="30,20,30,20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="130"/>
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Margin="10,0,0,20">
@@ -15,18 +30,86 @@
             <TextBlock Text="Désactiver les services inutiles" FontFamily="Segoe UI Light" FontSize="36" Foreground="White"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Margin="10,0,10,20">
-            <TextBlock Text="ℹ️ Cette action désactive les services Windows gourmands en arrière-plan (Télémétrie, Superfetch, Recherche) pour libérer de la mémoire RAM et du CPU." 
-                       Foreground="#9CA3AF" FontSize="13" TextWrapping="Wrap" Margin="0,0,0,15"/>
+        <Border Grid.Row="1" Background="#1B1E29" CornerRadius="10" Padding="14,12" Margin="10,0,10,20"
+                BorderBrush="#2A2E3A" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Width="20" Height="20" CornerRadius="10" Background="#8B5CF633" VerticalAlignment="Top">
+                    <TextBlock Text="i" FontFamily="Georgia" FontStyle="Italic" FontWeight="Bold" FontSize="13"
+                               Foreground="#A78BFA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <TextBlock Grid.Column="1" Margin="12,0,0,0"
+                           Text="Cochez les services que vous souhaitez désactiver. Cela libérera de la mémoire RAM et soulagera le processeur."
+                           Foreground="#9CA3AF" FontSize="13" TextWrapping="Wrap"/>
+            </Grid>
+        </Border>
 
-            <Button Content="Optimiser les services" Command="{Binding DisableServicesCommand}" Width="280" Height="48" BorderThickness="0" Cursor="Hand" Background="#8B5CF6" HorizontalAlignment="Left"/>
-            <TextBlock Text="{Binding ServiceStatus}" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="#10B981" Margin="0,15,0,0"/>
-        </StackPanel>
+        <Border Grid.Row="2" Background="#171A23" CornerRadius="12" BorderBrush="#2A2E3A" BorderThickness="1" Padding="8" Margin="10,0,10,15">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding ServicesList}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource ServiceRow}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
 
-        <Border Grid.Row="2" Background="#111827" CornerRadius="12" BorderBrush="#374151" BorderThickness="1" Margin="10,0,10,10">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="15">
-                <TextBlock Text="{Binding AuditLog}" FontFamily="Consolas" FontSize="14" Foreground="#D1D5DB" TextWrapping="Wrap"/>
+                                    <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" VerticalAlignment="Center" Margin="0,0,15,0">
+                                        <CheckBox.LayoutTransform>
+                                            <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
+                                        </CheckBox.LayoutTransform>
+                                    </CheckBox>
+
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding DisplayName}" FontFamily="Segoe UI Semibold" FontSize="14" Foreground="White" />
+                                        <TextBlock Text="{Binding Description}" FontFamily="Segoe UI" FontSize="12" Foreground="#9CA3AF" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </ScrollViewer>
         </Border>
+
+        <StackPanel Grid.Row="3" Margin="10,0,10,15">
+            <Button Content="Optimiser les services"
+                    Command="{Binding OptimizeSelectedServicesCommand}"
+                    Width="280" Height="48"
+                    BorderThickness="0" Cursor="Hand"
+                    Background="#8B5CF6" Foreground="White"
+                    FontFamily="Segoe UI Semibold" FontSize="14"
+                    HorizontalAlignment="Left"/>
+
+            <TextBlock Text="{Binding StatusMessage}" FontFamily="Segoe UI Semibold" FontSize="15" Foreground="#10B981" Margin="0,15,0,0"/>
+        </StackPanel>
+
+        <Border Grid.Row="4" Background="#111827" CornerRadius="12" BorderBrush="#2A2E3A" BorderThickness="1" Margin="10,0,10,10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" BorderBrush="#2A2E3A" BorderThickness="0,0,0,1" Padding="14,10">
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="9" Height="9" Fill="#EF4444" Margin="0,0,5,0"/>
+                        <Ellipse Width="9" Height="9" Fill="#F59E0B" Margin="0,0,5,0"/>
+                        <Ellipse Width="9" Height="9" Fill="#10B981" Margin="0,0,10,0"/>
+                        <TextBlock Text="Journal d'activité" FontFamily="Consolas" FontSize="12" Foreground="#6B7280"/>
+                    </StackPanel>
+                </Border>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="15">
+                    <TextBlock Text="{Binding AuditLog}" FontFamily="Consolas" FontSize="14" Foreground="#D1D5DB" TextWrapping="Wrap"/>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+
     </Grid>
 </UserControl>

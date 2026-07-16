@@ -1,79 +1,106 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FPSBoostPro.Models;
 
 namespace FPSBoostPro.ViewModels
 {
-    [SupportedOSPlatform("windows")]
     public partial class ServicesViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private string _serviceStatus = "Prêt à optimiser.";
+        public ObservableCollection<ServiceItem> ServicesList { get; set; }
 
-        // Nouvelle propriété pour la console d'audit
-        [ObservableProperty]
-        private string _auditLog = "En attente du lancement...\n";
+        private bool _isOptimizing;
+        public bool IsOptimizing
+        {
+            get => _isOptimizing;
+            set => SetProperty(ref _isOptimizing, value);
+        }
+
+        private string _statusMessage = "Prêt à optimiser les services";
+        public string StatusMessage
+        {
+            get => _statusMessage;
+            set => SetProperty(ref _statusMessage, value);
+        }
+
+        public event Action<string>? OnLogReceived;
+
+        public ServicesViewModel()
+        {
+            ServicesList = new ObservableCollection<ServiceItem>
+            {
+                new ServiceItem { DisplayName = "SysMain (Superfetch)", ServiceNames = ["SysMain"], Description = "Précharge la RAM. À désactiver si vous avez un SSD." },
+                new ServiceItem { DisplayName = "Windows Search", ServiceNames = ["WSearch"], Description = "Indexation des fichiers. Soulage le disque si désactivé." },
+                new ServiceItem { DisplayName = "Spooler d'impression", ServiceNames = ["Spooler"], Description = "Désactiver si vous n'avez pas d'imprimante." },
+                new ServiceItem { DisplayName = "Service Fax", ServiceNames = ["Fax"], Description = "Totalement inutile aujourd'hui." },
+                new ServiceItem { DisplayName = "Bluetooth", ServiceNames = ["bthserv"], Description = "Désactiver si vous n'utilisez aucun appareil Bluetooth." },
+                new ServiceItem { DisplayName = "Registre à distance", ServiceNames = ["RemoteRegistry"], Description = "Sécurité : empêche la modification réseau du registre." },
+                new ServiceItem { DisplayName = "Rapports d'erreurs", ServiceNames = ["WerSvc"], Description = "Évite l'envoi de rapports lourds lors de crashs." },
+                new ServiceItem { DisplayName = "Télémétrie Windows", ServiceNames = ["DiagTrack"], Description = "Désactive la collecte de données Microsoft." },
+                new ServiceItem { DisplayName = "Services Xbox", ServiceNames = ["XblAuthManager", "XblGameSave", "XboxNetApiSvc", "XboxGipSvc"], Description = "Désactiver si vous ne jouez pas aux jeux du Xbox Store." },
+                new ServiceItem { DisplayName = "Assistant Compatibilité", ServiceNames = ["PcaSvc"], Description = "Surveille les vieux programmes. Souvent inutile." }
+            };
+        }
 
         [RelayCommand]
-        private async Task DisableServices()
+        public async Task OptimizeSelectedServicesAsync()
         {
-            ServiceStatus = "Optimisation en cours...";
-            AuditLog = "=== DÉBUT DE L'AUDIT DES SERVICES ===\n\n";
-            int successCount = 0;
+            if (IsOptimizing) return;
 
-            string[] servicesToDisable = { "DiagTrack", "WSearch", "SysMain" };
+            IsOptimizing = true;
+            StatusMessage = "Désactivation en cours...";
+            Log("Début de l'optimisation des services...");
 
-            // On boucle de manière asynchrone pour mettre à jour l'interface à chaque étape
-            foreach (string service in servicesToDisable)
+            await Task.Run(() =>
             {
-                AuditLog += $"⏳ Traitement du service : {service}...\n";
-
-                // On exécute la commande PowerShell en arrière-plan
-                bool success = await Task.Run(() =>
+                foreach (var item in ServicesList)
                 {
-                    try
+                    if (item.IsSelected)
                     {
-                        string args = $"-Command \"Stop-Service -Name '{service}' -Force; Set-Service -Name '{service}' -StartupType Disabled\"";
-                        ProcessStartInfo psi = new ProcessStartInfo
+                        foreach (var service in item.ServiceNames)
                         {
-                            FileName = "powershell.exe",
-                            Arguments = args,
-                            WindowStyle = ProcessWindowStyle.Hidden,
-                            CreateNoWindow = true
-                        };
-
-                        using (Process? process = Process.Start(psi))
-                        {
-                            process?.WaitForExit();
-                            return process != null && process.ExitCode == 0;
+                            Log($"Désactivation de {service}...");
+                            ExecuteCommand("sc", $"config \"{service}\" start= disabled");
+                            ExecuteCommand("sc", $"stop \"{service}\"");
                         }
                     }
-                    catch
-                    {
-                        return false;
-                    }
-                });
-
-                // On met à jour l'écran avec le résultat
-                if (success)
-                {
-                    AuditLog += $"✅ SUCCÈS : {service} désactivé.\n\n";
-                    successCount++;
                 }
-                else
-                {
-                    AuditLog += $"❌ ÉCHEC : Impossible de désactiver {service} (Droits Admin ?).\n\n";
-                }
+                Log("✅ Services sélectionnés optimisés !");
+            });
 
-                // Petite pause visuelle pour bien voir le texte défiler
-                await Task.Delay(400);
-            }
-
-            AuditLog += $"=== TERMINÉ : {successCount}/{servicesToDisable.Length} services optimisés ===";
-            ServiceStatus = "✓ Audit terminé !";
+            StatusMessage = "Terminé avec succès !";
+            IsOptimizing = false;
         }
+
+        private void ExecuteCommand(string filename, string arguments)
+        {
+            try
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = filename,
+                    Arguments = arguments,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    Verb = "runas"
+                };
+
+                using (Process? process = Process.Start(startInfo))
+                {
+                    process?.WaitForExit();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log($"Erreur ({filename}) : {ex.Message}");
+            }
+        }
+
+        private void Log(string message) => OnLogReceived?.Invoke($"[Services] {message}");
     }
 }

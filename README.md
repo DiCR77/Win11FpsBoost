@@ -1,4 +1,4 @@
-#                                                            ---------------------- ⚡ DiFPSBoost (Windows 11) ------------------------
+#                                                            -------------------- ⚡ DiFPSBoost (Windows 11) ------------------------
 
 <img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/2db2ebe8-39b7-433d-bbe7-d4b4f81ed817" />
 

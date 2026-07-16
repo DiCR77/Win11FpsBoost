@@ -1,15 +1,24 @@
-# ⚡ DiFPSBoost (Windows 11)
+#                                                                  ⚡ DiFPSBoost (Windows 11)
+
+<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/2db2ebe8-39b7-433d-bbe7-d4b4f81ed817" />
 
 Activez le plein potentiel de votre machine ! **DiFPSBoost** est une application moderne développée en **C# / WPF** (architecture MVVM) permettant d'optimiser Windows 11 pour le gaming, de réduire la latence (ping) et de nettoyer le système en toute sécurité.
 
 ---
+🛡️ Workflow Sécurisé : "D'abord la sécurité"
+Nous avons repensé l'expérience utilisateur pour garantir une optimisation sans risque. Le tableau de bord privilégie désormais un workflow en deux étapes :
 
+Point de Restauration (Priorité) : L'application intègre la création automatique de points de restauration système (Checkpoint-Computer) avant toute modification.
+
+Optimisation en un clic : Une fois la sécurité garantie, lancez le nettoyage et les tweaks système en toute sérénité.
+
+---
 ## 🚀 Fonctionnalités principales
 
 * **🏠 Tableau de bord interactif** : Visualisez l'état global de votre système en un coup d'œil.
-* **⚡ Boost en un clic** : Crée automatiquement un point de restauration système avant de nettoyer en profondeur les caches et les fichiers temporaires (`%TEMP%`).
-* **💻 Console d'Audit en Direct** : Suivez chaque action étape par étape grâce à une console intégrée interactive qui affiche les réussites et détaille les erreurs (ex: droits administrateur manquants).
-* **🌐 Optimisation Réseau (Ping)** : Réduction de la latence via la désactivation du *Network Throttling*, l'activation du *Receive Side Scaling (RSS)*, le vidage DNS et l'optimisation TCP Autotuning.
+* **⚡ Boost en un clic** : Nettoyage en profondeur des caches et fichiers temporaires (%TEMP%) couplé à une protection par point de restauration.
+* **💻 Console d'Audit en Direct** : Suivez chaque action étape par étape grâce à une console intégrée interactive. Elle affiche en temps réel les réussites et détaille les erreurs (ex: droits administrateur, échecs de commandes système).
+* **🌐 Optimisation Réseau (Ping)** : Réduction de la latence via la désactivation du Network Throttling, l'activation du Receive Side Scaling (RSS), le vidage DNS et l'optimisation TCP Autotuning.
 * **⚙️ Services Manager** : Désactivation intelligente et asynchrone des services superflus et de la télémétrie Windows (*DiagTrack*, *WSearch*, *SysMain*).
 * **🔋 Alimentation Avancée** : Déblocage et activation du profil caché **Performances Optimales** de Windows, désactivation de la mise en veille des ports USB, du PCI Express (LSPM) et des disques durs.
 * **🎮 Tweaks Gaming** : Activation du *Windows Game Mode*, désactivation de la latence du *Game DVR* et de l'accélération de la souris pour une précision $1:1$.
@@ -42,8 +51,9 @@ Test de performance réel effectué sur le jeu **Unturned** avec un processeur *
 ## 📸 Aperçu de l'interface
 
 * **Tableau de bord & Console d'Audit**
-<img width="1120" height="653" alt="image" src="https://github.com/user-attachments/assets/af1cf65f-d11c-442e-b83b-52e0fba31be1" />
 
+ <img width="1167" height="951" alt="image" src="https://github.com/user-attachments/assets/4ad35981-9977-471a-8f1f-0b8e3ca0dcdc" />
+ 
 ---
 
 ## ⚠️ Sécurité & VM / Sandbox

@@ -1,6 +1,6 @@
 #                                                            -------------------- ⚡ DiFPSBoost (Windows 11) ------------------------
 
-<img width="1024" height="400" alt="image" src="https://github.com/user-attachments/assets/2db2ebe8-39b7-433d-bbe7-d4b4f81ed817" />
+<img width="1024" height="700" alt="image" src="https://github.com/user-attachments/assets/2db2ebe8-39b7-433d-bbe7-d4b4f81ed817" />
 
 
 Activez le plein potentiel de votre machine ! **DiFPSBoost** est une application moderne développée en **C# / WPF** (architecture MVVM) permettant d'optimiser Windows 11 pour le gaming, de réduire la latence (ping) et de nettoyer le système en toute sécurité.

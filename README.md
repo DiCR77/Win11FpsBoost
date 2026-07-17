@@ -1,7 +1,7 @@
 <h1 align="center">⚡ DiFPSBoost (Windows 11)</h1>
 
 <p align="center">
-<img width="500" alt="image" src="https://github.com/user-attachments/assets/878a4871-724d-4e25-a7b6-80722e5aa513" />
+<img width="918" height="918" alt="image" src="https://github.com/user-attachments/assets/9ef757b2-1169-4b48-b92a-586c050a9b69" />
 </p>
 
 
